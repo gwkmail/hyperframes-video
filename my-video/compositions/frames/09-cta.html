@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>09-cta</title>
+    <!-- Note: everything in <head> is discarded by the HyperFrames sub-composition
+         loader — it only clones <template> contents. Kept here for source readability. -->
+  </head>
+  <body>
+    <template>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&display=swap');
+
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1080px;
+          height: 1920px;
+          overflow: hidden;
+          container-type: size;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .clip {
+          position: absolute;
+          inset: 0;
+        }
+
+        /* Full-bleed ground — a dedicated clip layer, never painted on #root. */
+        .bg-field {
+          background: #0b1e3c;
+        }
+
+        /* Concentric rings — background atmosphere, faint gold, centered on the hero anchor. */
+        .rings-wrap {
+          position: absolute;
+          left: 50%;
+          top: 806px; /* 0.42 x 1920 — centered-hero anchor, not canvas midpoint */
+          transform: translate(-50%, -50%);
+          width: 0;
+          height: 0;
+        }
+
+        .ring {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          border-radius: 50%;
+          border: 1.5px solid rgba(212, 175, 55, 0.16);
+        }
+
+        .ring-1 {
+          width: 640px;
+          height: 640px;
+        }
+
+        .ring-2 {
+          width: 920px;
+          height: 920px;
+          border-color: rgba(212, 175, 55, 0.11);
+        }
+
+        .ring-3 {
+          width: 1220px;
+          height: 1220px;
+          border-color: rgba(212, 175, 55, 0.07);
+        }
+
+        /* Scene 1 (0.0-1.2s) — "CHECK OUT OUR" hard-cuts in, centered on the hero anchor. */
+        .line1-stack {
+          position: absolute;
+          left: 50%;
+          top: 806px;
+          transform: translate(-50%, -50%);
+          width: 84%;
+          text-align: center;
+        }
+
+        .line1-text {
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 700;
+          font-size: 6.2cqw;
+          line-height: 1.2;
+          letter-spacing: 0.01em;
+          color: #f5f1e6;
+          text-transform: uppercase;
+          margin: 0;
+        }
+
+        /* Scene 2+3 (1.2-4.0s) — headline lockup + CTA pill. */
+        .headline-stack {
+          position: absolute;
+          left: 50%;
+          top: 750px;
+          transform: translate(-50%, -50%);
+          width: 88%;
+          text-align: center;
+        }
+
+        .headline-line {
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 700;
+          font-size: 7.6cqw;
+          line-height: 1.12;
+          letter-spacing: -0.01em;
+          color: #d4af37;
+          text-transform: uppercase;
+          margin: 0;
+        }
+
+        .cta-wrap {
+          position: absolute;
+          left: 50%;
+          top: 1200px;
+          transform: translate(-50%, -50%);
+        }
+
+        .cta-pill {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          padding: 26px 56px;
+          border-radius: 100px;
+          background: #d4af37;
+          box-shadow: 0 0 46px 6px rgba(212, 175, 55, 0.28);
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 600;
+          font-size: 3.4cqw;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          color: #0b1e3c;
+          white-space: nowrap;
+          transform-origin: 50% 50%;
+          will-change: transform;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="09-cta"
+        data-width="1080"
+        data-height="1920"
+        data-duration="4"
+      >
+        <!-- Full-bleed navy ground, entire shot -->
+        <div class="clip bg-field" data-start="0" data-duration="4" data-track-index="0"></div>
+
+        <!-- Concentric gold rings, established early, hold faintly behind through the whole shot -->
+        <div class="clip" data-start="0" data-duration="4" data-track-index="1">
+          <div class="rings-wrap" id="rings-wrap">
+            <div class="ring ring-3"></div>
+            <div class="ring ring-2"></div>
+            <div class="ring ring-1"></div>
+          </div>
+        </div>
+
+        <!-- Scene 1 (0.0-1.2s): "CHECK OUT OUR" hard-cuts in dead-center -->
+        <div class="clip" data-start="0" data-duration="1.2" data-track-index="2">
+          <div class="line1-stack">
+            <p class="line1-text">Check out our</p>
+          </div>
+        </div>
+
+        <!-- Scene 2 (1.2-2.6s) + Scene 3 (2.6-4.0s): headline hard-cuts in and holds;
+             CTA pill spring-pops beneath at 2.6s (the video's second earned overshoot). -->
+        <div class="clip" data-start="1.2" data-duration="2.8" data-track-index="2">
+          <div class="headline-stack">
+            <p class="headline-line">Ira Maximization</p>
+            <p class="headline-line">Calculator</p>
+          </div>
+          <div class="cta-wrap">
+            <div class="cta-pill" id="cta-pill">See your numbers</div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+
+          var ringsWrap = document.getElementById('rings-wrap');
+          var ctaPill = document.getElementById('cta-pill');
+
+          // Static starting states (set synchronously, before the timeline runs).
+          gsap.set(ringsWrap, { opacity: 0 });
+          gsap.set(ctaPill, { scale: 0, opacity: 0 });
+
+          var tl = gsap.timeline({ paused: true });
+
+          // Rings bloom in softly behind Scene 1's opening line, then hold faintly for
+          // the rest of the shot (no breathing loop — a single finite fade-in).
+          tl.to(ringsWrap, { opacity: 1, duration: 0.7, ease: 'power2.out' }, 0.1);
+
+          // Scene 1 (0.0-1.2s) — "CHECK OUT OUR" hard-cuts via clip visibility, no tween.
+
+          // Scene 2 (1.2-2.6s) — headline hard-cuts via clip visibility, no tween;
+          // it persists as the supporting lockup through Scene 3.
+
+          // Scene 3 (2.6-4.0s) — CTA pill spring-pops beneath the headline. This is the
+          // video's second (and only other) earned overshoot alongside Frame 6's badge —
+          // everywhere else in this shot stays power3-smooth.
+          tl.fromTo(
+            ctaPill,
+            { scale: 0, opacity: 0 },
+            { scale: 1, opacity: 1, duration: 0.5, ease: 'back.out(1.6)' },
+            2.6,
+          );
+
+          // Final settle: barely-perceptible subtle jitter on the pill once it lands —
+          // a single finite sine pass (no repeat/yoyo), landing the shot on a quiet hold
+          // since this is the video's closing frame.
+          var phase = { p: 0 };
+          tl.to(
+            phase,
+            {
+              p: Math.PI * 2,
+              duration: 0.7,
+              ease: 'none',
+              onUpdate: function () {
+                var y = Math.sin(phase.p) * 2; // 2px — barely-perceptible
+                gsap.set(ctaPill, { y: y });
+              },
+            },
+            3.3,
+          );
+
+          window.__timelines['09-cta'] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

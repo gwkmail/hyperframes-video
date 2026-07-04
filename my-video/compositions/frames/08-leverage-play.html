@@ -1,0 +1,298 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- head is metadata for the source file only; the HyperFrames runtime
+         only clones <template> contents — nothing here ships to the render. -->
+    <title>Frame 8 — The advanced play</title>
+  </head>
+  <body>
+    <template>
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&display=swap');
+
+        /* Root — styled by #root only, never a class (scoping pitfall). */
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1080px;
+          height: 1920px;
+          overflow: hidden;
+          font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+        }
+
+        /* Full-bleed ground lives on its own class="clip" layer, never on #root. */
+        .bg-field {
+          position: absolute;
+          inset: 0;
+          background: #0b1e3c;
+        }
+
+        .scene {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+        }
+
+        .content {
+          position: absolute;
+          inset: 0;
+          will-change: transform;
+        }
+
+        .headline {
+          position: absolute;
+          top: 300px;
+          left: 0;
+          right: 0;
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 0.32em;
+          padding: 0 90px;
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 600;
+          font-size: 64px;
+          line-height: 1.28;
+          letter-spacing: -0.01em;
+          color: #f5f1e6;
+          text-align: center;
+        }
+
+        .headline .word {
+          display: inline-block;
+          opacity: 0;
+        }
+
+        .hero-stack {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 806px;
+          transform: translateY(-50%);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 40px;
+        }
+
+        .hero-row {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 44px;
+        }
+
+        .counter-wrap {
+          position: relative;
+          width: 560px;
+          height: 240px;
+          display: flex;
+          align-items: baseline;
+          justify-content: center;
+        }
+
+        .glow {
+          position: absolute;
+          z-index: 1;
+          inset: -220px;
+          border-radius: 50%;
+          background: radial-gradient(
+            circle,
+            rgba(212, 175, 55, 0.9) 0%,
+            rgba(212, 175, 55, 0.5) 38%,
+            rgba(212, 175, 55, 0) 70%
+          );
+          opacity: 0;
+          pointer-events: none;
+          will-change: transform, opacity;
+        }
+
+        .counter {
+          position: relative;
+          z-index: 2;
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 700;
+          font-variant-numeric: tabular-nums;
+          letter-spacing: -0.03em;
+          line-height: 1;
+          color: #d4af37;
+          font-size: 100px;
+        }
+
+        .suffix {
+          position: relative;
+          z-index: 2;
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 700;
+          letter-spacing: -0.03em;
+          line-height: 1;
+          color: #d4af37;
+          font-size: 220px;
+          opacity: 0;
+        }
+
+        .label-col {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+          opacity: 0;
+        }
+
+        .label-line {
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 600;
+          font-size: 34px;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          color: #f5f1e6;
+          white-space: nowrap;
+        }
+
+        .subtext {
+          position: relative;
+          z-index: 2;
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 500;
+          font-size: 38px;
+          letter-spacing: 0.02em;
+          color: #d4af37;
+          opacity: 0;
+          text-align: center;
+        }
+      </style>
+
+      <div id="root" data-composition-id="08-leverage-play" data-width="1080" data-height="1920" data-duration="5">
+        <div class="bg-field clip" data-start="0" data-duration="5" data-track-index="0"></div>
+
+        <div class="scene clip" data-start="0" data-duration="5" data-track-index="1">
+          <div class="content" id="content">
+            <div class="headline" id="headline">
+              <span class="word">Planning</span><span class="word">changes</span><span class="word">everything.</span>
+            </div>
+
+            <div class="hero-stack" id="hero-stack">
+              <div class="hero-row">
+                <div class="counter-wrap">
+                  <div class="glow" id="glow"></div>
+                  <span class="counter" id="counter">0</span><span class="suffix" id="suffix">-3X</span>
+                </div>
+                <div class="label-col" id="label-col">
+                  <span class="label-line">Leverage via</span>
+                  <span class="label-line">life insurance</span>
+                </div>
+              </div>
+              <div class="subtext" id="subtext">= major tax savings</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        const counterEl = document.getElementById("counter");
+        const heroStack = document.getElementById("hero-stack");
+
+        // Scene 1 (0.0–1.5s): cream headline reveals per-word — "Planning
+        // changes everything." — centered, upper-third.
+        const words = document.querySelectorAll(".headline .word");
+        const wordStarts = [0.05, 0.35, 0.65];
+        words.forEach((word, i) => {
+          tl.fromTo(
+            word,
+            { opacity: 0, y: 20 },
+            { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" },
+            wordStarts[i],
+          );
+        });
+
+        // Scene 2 (1.5–3.5s): bold gold "2-3X" counts/scales up centered
+        // beneath the headline, landing at y≈0.42×height (counting-dynamic-scale).
+        // The leading digit counts 0→2 while its font-size grows; the "-3X"
+        // suffix slides in back.out AFTER the count lands, per the recipe.
+        const counterState = { value: 0, fontSize: 100 };
+        tl.fromTo(
+          counterState,
+          { value: 0, fontSize: 100 },
+          {
+            value: 2,
+            fontSize: 220,
+            duration: 1.0,
+            ease: "power3.out",
+            onUpdate: () => {
+              counterEl.textContent = Math.round(counterState.value).toLocaleString();
+              counterEl.style.fontSize = `${counterState.fontSize}px`;
+            },
+          },
+          1.5,
+        );
+
+        tl.fromTo(
+          "#suffix",
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.5, ease: "back.out(1.6)" },
+          2.5,
+        );
+
+        // Cream label "leverage via life insurance" fades in beside the
+        // numeral, arriving before the count peaks so it reads as one beat.
+        tl.fromTo(
+          "#label-col",
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+          1.8,
+        );
+
+        // Scene 3 (3.5–5.0s): soft gold ambient glow blooms behind "2-3X"
+        // (ambient-glow-bloom), landing as the numeral settles.
+        tl.fromTo(
+          "#glow",
+          { opacity: 0, scale: 0.85 },
+          { opacity: 0.32, scale: 1, duration: 0.8, ease: "power2.out" },
+          3.5,
+        );
+
+        // Small cream subtext "= major tax savings" settles below.
+        tl.fromTo(
+          "#subtext",
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+          3.6,
+        );
+
+        // Bounded, low-amplitude jitter during the final hold — the only
+        // sanctioned aliveness once everything has landed (this is one of
+        // the video's two hero-landing holds, mirroring Frame 3). Not a
+        // loop: a single finite tween from phase 0, sin(0)=0 so there is no
+        // jump from the settled state.
+        const jitter = { p: 0 };
+        tl.to(
+          jitter,
+          {
+            p: Math.PI * 2 * 0.5,
+            duration: 0.7,
+            ease: "none",
+            onUpdate: () => {
+              const s = Math.sin(jitter.p);
+              const scale = 1 + s * 0.01;
+              const y = s * 2;
+              heroStack.style.transform = `translateY(calc(-50% + ${y}px)) scale(${scale})`;
+            },
+          },
+          4.3,
+        );
+
+        window.__timelines["08-leverage-play"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
