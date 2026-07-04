@@ -1,0 +1,30 @@
+Inherited IRAs Under the New Tax Rules (SECURE Act 2.0 / 10-Year Rule)
+
+Topic: What happens when you inherit an IRA today, and how the rules changed.
+
+Background:
+- The SECURE Act (2019) eliminated the "stretch IRA" for most non-spouse beneficiaries. Before, a beneficiary could stretch withdrawals — and taxes — over their own life expectancy, sometimes decades.
+- Now, most non-spouse beneficiaries fall into the "10-Year Rule": the entire inherited IRA must be emptied by December 31 of the 10th year after the original owner's death. There's no fixed annual withdrawal amount required — beneficiaries have flexibility in timing — but the account must hit zero by year 10.
+
+Who is exempt from the 10-year rule ("Eligible Designated Beneficiaries"):
+- Surviving spouses (can also roll the IRA into their own).
+- Minor children of the original owner (10-year clock starts once they reach majority).
+- Disabled or chronically ill individuals.
+- Beneficiaries not more than 10 years younger than the original owner.
+These groups can still stretch distributions over their own life expectancy.
+
+The catch most people miss (2024/2025 IRS final regulations):
+- If the original account owner died ON OR AFTER their Required Beginning Date (i.e., they had already started Required Minimum Distributions), non-eligible beneficiaries subject to the 10-year rule must ALSO take annual RMDs during years 1-9, not just empty the account by year 10.
+- If the owner died BEFORE their Required Beginning Date, no annual RMDs are required during the 10 years — just empty the account by the end of year 10.
+- Missing a required annual distribution used to trigger a 50% excise tax penalty on the shortfall. That penalty was reduced (SECURE 2.0) to 25%, and further to 10% if corrected within two years.
+
+Roth vs. Traditional inherited IRAs:
+- Traditional inherited IRA: every withdrawal is taxable income.
+- Roth inherited IRA: withdrawals are generally tax-free, but the 10-year emptying rule still applies. No annual RMDs are required within the 10 years for Roth accounts regardless of the original owner's age, since Roth owners have no RBD.
+
+Why this matters / planning angle:
+- Waiting until year 10 to withdraw everything can push a beneficiary into a much higher tax bracket in one year.
+- Smart planning spreads withdrawals across the 10-year window — especially in lower-income years — to minimize the tax hit.
+- Beneficiaries should check whether they owe annual RMDs (based on the original owner's RMD status) to avoid the penalty entirely.
+
+Call to action: Talk to a tax or financial advisor before deciding when to withdraw from an inherited IRA — timing changes how much of it you keep.
