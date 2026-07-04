@@ -1,0 +1,344 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- head is metadata for the source file only; the HyperFrames runtime
+         only clones <template> contents — nothing here ships to the render. -->
+    <title>Frame 6 — The catch</title>
+  </head>
+  <body>
+    <template>
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&display=swap');
+
+        /* Root — styled by #root only, never a class (scoping pitfall). */
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1080px;
+          height: 1920px;
+          overflow: hidden;
+          font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+        }
+
+        /* Full-bleed ground lives on its own class="clip" layer, never on #root. */
+        .bg-field {
+          position: absolute;
+          inset: 0;
+          background: #0b1e3c;
+        }
+
+        .scene {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+        }
+
+        /* ---- Title (Scene 1) ---- */
+        .title-wrap {
+          position: absolute;
+          top: 170px;
+          left: 0;
+          right: 0;
+          display: flex;
+          justify-content: center;
+        }
+        .title {
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 700;
+          font-size: 80px;
+          letter-spacing: -0.01em;
+          text-transform: uppercase;
+          color: #d4af37;
+          opacity: 0;
+        }
+
+        /* ---- Perspective stage shared by both cards (Scene 2 signature) ---- */
+        .cards-perspective {
+          position: absolute;
+          inset: 0;
+          perspective: 1700px;
+        }
+
+        /* Each stage box fixes the card's RESTING position/size; the card
+           itself only ever receives GSAP transform props (x/y/rotateY/scale),
+           never a CSS transform, so there is no gsap/css transform conflict. */
+        .card-stage {
+          position: absolute;
+          transform-style: preserve-3d;
+        }
+        .card-stage-top {
+          left: 110px;
+          top: 380px;
+          width: 860px;
+          height: 420px;
+        }
+        .card-stage-bottom {
+          left: 80px;
+          top: 860px;
+          width: 920px;
+          height: 520px;
+        }
+
+        /* Ambient glow — behind the card, extends past it via negative inset. */
+        .glow {
+          position: absolute;
+          inset: -170px;
+          border-radius: 50%;
+          opacity: 0;
+          pointer-events: none;
+          will-change: opacity, transform;
+        }
+        .glow-top {
+          background: radial-gradient(
+            circle,
+            rgba(90, 130, 200, 0.55) 0%,
+            rgba(90, 130, 200, 0.28) 40%,
+            rgba(90, 130, 200, 0) 72%
+          );
+        }
+        .glow-bottom {
+          background: radial-gradient(
+            circle,
+            rgba(212, 175, 55, 0.62) 0%,
+            rgba(212, 175, 55, 0.32) 40%,
+            rgba(212, 175, 55, 0) 72%
+          );
+        }
+
+        .card {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          box-sizing: border-box;
+          border-radius: 14px;
+          transform-style: preserve-3d;
+          transform-origin: 50% 50%;
+          will-change: transform;
+          opacity: 0;
+        }
+        .card-top {
+          padding: 52px 60px;
+          background: rgba(212, 175, 55, 0.04);
+          border: 1.5px solid rgba(212, 175, 55, 0.2);
+          /* faces right (book-open, +rotateY) -> shadow falls right */
+          box-shadow:
+            22px 26px 60px rgba(0, 0, 0, 0.5),
+            0 0 24px rgba(90, 130, 200, 0.22);
+        }
+        .card-bottom {
+          padding: 58px 64px;
+          background: rgba(212, 175, 55, 0.07);
+          border: 1.5px solid rgba(212, 175, 55, 0.35);
+          /* faces left (book-open, -rotateY) -> shadow falls left */
+          box-shadow:
+            -22px 26px 70px rgba(0, 0, 0, 0.55),
+            0 0 30px rgba(212, 175, 55, 0.3);
+        }
+
+        .card-eyebrow {
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 600;
+          font-size: 26px;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: #d4af37;
+          margin-bottom: 20px;
+        }
+        .card-headline {
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 700;
+          line-height: 1.15;
+          letter-spacing: -0.01em;
+          color: #f5f1e6;
+        }
+        .card-top .card-headline {
+          font-size: 50px;
+        }
+        .card-bottom .card-headline {
+          font-size: 58px;
+        }
+        .card-subline {
+          font-family: "Inter", sans-serif;
+          font-weight: 400;
+          font-size: 25px;
+          letter-spacing: 0.02em;
+          color: #949494;
+          margin-top: 22px;
+        }
+
+        /* ---- Badge (Scene 3 — the earned overshoot) ---- */
+        .badge-wrap {
+          position: absolute;
+          top: 828px;
+          left: 0;
+          right: 0;
+          display: flex;
+          justify-content: center;
+          z-index: 3;
+        }
+        .badge {
+          display: inline-block;
+          padding: 22px 46px;
+          border-radius: 100px;
+          background: #d4af37;
+          color: #0b1e3c;
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 600;
+          font-size: 30px;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+          transform-origin: 50% 50%;
+          opacity: 0;
+          will-change: transform, opacity;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="06-the-catch"
+        data-width="1080"
+        data-height="1920"
+        data-duration="6"
+      >
+        <div class="bg-field clip" data-start="0" data-duration="6" data-track-index="0"></div>
+
+        <div class="scene clip" data-start="0" data-duration="6" data-track-index="1">
+          <div class="title-wrap">
+            <div class="title" id="title">The Catch</div>
+          </div>
+
+          <div class="cards-perspective">
+            <div class="card-stage card-stage-top">
+              <div class="glow glow-top" id="glow-top"></div>
+              <div class="card card-top" id="card-top">
+                <div class="card-eyebrow">If RMDs Hadn't Started</div>
+                <div class="card-headline">Just empty it<br />by year 10</div>
+              </div>
+            </div>
+
+            <div class="card-stage card-stage-bottom">
+              <div class="glow glow-bottom" id="glow-bottom"></div>
+              <div class="card card-bottom" id="card-bottom">
+                <div class="card-eyebrow">If RMDs Already Started</div>
+                <div class="card-headline">+ Annual<br />Withdrawals</div>
+                <div class="card-subline">Years 1&ndash;9, Every Year</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="badge-wrap">
+            <div class="badge" id="badge">Most Miss This</div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        const cardTop = document.getElementById("card-top");
+        const cardBottom = document.getElementById("card-bottom");
+
+        // Mirrored book-open tilt magnitudes (top faces right/+, bottom faces left/-).
+        const TILT_TOP = 14;
+        const TILT_BOTTOM = -14;
+        const TILT_OVERSHOOT = 8; // extra static degrees at the start of the settle, no bounce
+
+        // ---- Scene 1 (0.0-1.0s): centered gold title slides down into place ----
+        tl.fromTo(
+          "#title",
+          { y: -46, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" },
+          0.1,
+        );
+
+        // ---- Scene 2 (1.0-3.4s): split-tilt entry — the signature move ----
+        // Top card ("assumed case") arrives first, from the top-left, tilted
+        // like a book-open left leaf (+rotateY). Bottom card ("the catch")
+        // arrives ~0.2s behind from the bottom-right, mirrored (-rotateY).
+        tl.fromTo(
+          cardTop,
+          { x: -240, y: -170, rotateY: TILT_TOP + TILT_OVERSHOOT, scale: 0.88, opacity: 0 },
+          {
+            x: 0,
+            y: 0,
+            rotateY: TILT_TOP,
+            scale: 1,
+            opacity: 1,
+            duration: 0.9,
+            ease: "power3.out",
+          },
+          1.0,
+        );
+        tl.fromTo(
+          cardBottom,
+          { x: 250, y: 180, rotateY: TILT_BOTTOM - TILT_OVERSHOOT, scale: 0.88, opacity: 0 },
+          {
+            x: 0,
+            y: 0,
+            rotateY: TILT_BOTTOM,
+            scale: 1,
+            opacity: 1,
+            duration: 0.9,
+            ease: "power3.out",
+          },
+          1.2,
+        );
+
+        // Dual ambient glow blooms — each lands as ONE beat with its card's
+        // settle (top: cool navy accent, bottom: gold, stronger for the focal
+        // card). Bloom-and-hold, no breathe (scene is short).
+        tl.fromTo(
+          "#glow-top",
+          { opacity: 0, scale: 0.85 },
+          { opacity: 0.24, scale: 1, duration: 0.8, ease: "power2.out" },
+          1.1,
+        );
+        tl.fromTo(
+          "#glow-bottom",
+          { opacity: 0, scale: 0.85 },
+          { opacity: 0.36, scale: 1, duration: 0.9, ease: "power2.out" },
+          1.2,
+        );
+
+        // ---- Scene 3 (3.4-6.0s): inner-edge badge spring-pop — the lone ----
+        // earned overshoot in this shot (back.out, kept <= ~2).
+        tl.fromTo(
+          "#badge",
+          { scale: 0, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(1.7)" },
+          3.4,
+        );
+
+        // Gentle phase-opposed idle float on the pair once the badge lands —
+        // never synchronized: top rides sin(t), bottom rides sin(t+PI).
+        // Composes on top of the resting transform (x:0,y:0,rotateY:TILT,scale:1);
+        // bounded, deterministic, no repeat/yoyo.
+        const floatPhase = { p: 0 };
+        tl.to(
+          floatPhase,
+          {
+            p: Math.PI * 2 * 1,
+            duration: 2.1,
+            ease: "none",
+            onUpdate: () => {
+              const sTop = Math.sin(floatPhase.p);
+              const sBottom = Math.sin(floatPhase.p + Math.PI);
+              cardTop.style.transform = `translate(0px, ${sTop * 3}px) rotateY(${TILT_TOP}deg) scale(${1 + sTop * 0.008})`;
+              cardBottom.style.transform = `translate(0px, ${sBottom * 3}px) rotateY(${TILT_BOTTOM}deg) scale(${1 + sBottom * 0.008})`;
+            },
+          },
+          3.9,
+        );
+
+        window.__timelines["06-the-catch"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
