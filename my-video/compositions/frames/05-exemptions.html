@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Frame 5 — Who's exempt</title>
+  </head>
+  <body>
+    <template>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&display=swap');
+
+        #root {
+          position: relative;
+          width: 1080px;
+          height: 1920px;
+          overflow: hidden;
+          font-family: "Inter", system-ui, sans-serif;
+        }
+
+        .bg-field {
+          position: absolute;
+          inset: 0;
+          background: #0B1E3C;
+        }
+
+        .content {
+          position: absolute;
+          inset: 0;
+          padding: 150px 64px 0;
+          box-sizing: border-box;
+        }
+
+        .eyebrow-block {
+          margin-bottom: 60px;
+        }
+
+        .eyebrow {
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 600;
+          font-size: 34px;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: #D4AF37;
+          will-change: transform, opacity;
+        }
+
+        .accent-line {
+          width: 70px;
+          height: 4px;
+          border-radius: 2px;
+          background: #D4AF37;
+          margin-top: 18px;
+          transform-origin: 0% 50%;
+          will-change: transform, opacity;
+        }
+
+        .list {
+          display: flex;
+          flex-direction: column;
+          gap: 36px;
+        }
+
+        .row {
+          display: flex;
+          align-items: center;
+          gap: 32px;
+          height: 270px;
+          padding: 0 40px;
+          box-sizing: border-box;
+          background: rgba(212, 175, 55, 0.04);
+          border: 1.5px solid rgba(212, 175, 55, 0.2);
+          border-radius: 14px;
+          will-change: transform;
+        }
+
+        .badge {
+          flex-shrink: 0;
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          background: #D4AF37;
+          display: grid;
+          place-items: center;
+          transform-origin: 50% 50%;
+          will-change: transform, opacity;
+        }
+
+        .badge svg {
+          width: 60px;
+          height: 60px;
+          overflow: visible;
+        }
+
+        .badge path {
+          fill: none;
+          stroke: #0B1E3C;
+          stroke-width: 3;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+
+        .label-mask {
+          flex: 1;
+          height: 120px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+        }
+
+        .label {
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 600;
+          font-size: 42px;
+          line-height: 1.25;
+          color: #F5F1E6;
+          letter-spacing: -0.01em;
+          will-change: transform, opacity;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="05-exemptions"
+        data-width="1080"
+        data-height="1920"
+        data-duration="6"
+      >
+        <div class="clip bg-field" id="bg" data-start="0" data-duration="6" data-track-index="0"></div>
+
+        <div class="clip content" id="content" data-start="0" data-duration="6" data-track-index="1">
+          <div class="eyebrow-block">
+            <div class="eyebrow" id="eyebrow">WHO'S EXEMPT</div>
+            <div class="accent-line" id="accent-line"></div>
+          </div>
+
+          <div class="list">
+            <div class="row" id="row-0">
+              <div class="badge" id="badge-0">
+                <svg viewBox="0 0 24 24"><path id="check-0" d="M4 12.5l4.5 4.5L20 6" /></svg>
+              </div>
+              <div class="label-mask">
+                <div class="label" id="label-0">Spouses</div>
+              </div>
+            </div>
+
+            <div class="row" id="row-1">
+              <div class="badge" id="badge-1">
+                <svg viewBox="0 0 24 24"><path id="check-1" d="M4 12.5l4.5 4.5L20 6" /></svg>
+              </div>
+              <div class="label-mask">
+                <div class="label" id="label-1">Minor children</div>
+              </div>
+            </div>
+
+            <div class="row" id="row-2">
+              <div class="badge" id="badge-2">
+                <svg viewBox="0 0 24 24"><path id="check-2" d="M4 12.5l4.5 4.5L20 6" /></svg>
+              </div>
+              <div class="label-mask">
+                <div class="label" id="label-2">Disabled or chronically ill</div>
+              </div>
+            </div>
+
+            <div class="row" id="row-3">
+              <div class="badge" id="badge-3">
+                <svg viewBox="0 0 24 24"><path id="check-3" d="M4 12.5l4.5 4.5L20 6" /></svg>
+              </div>
+              <div class="label-mask">
+                <div class="label" id="label-3">Near-in-age heirs</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <script>
+        window.__timelines = window.__timelines || {};
+
+        // --- Beat grid (silent frame — no voiceover) ---------------------
+        // Scene 1 (0.0-1.2s): eyebrow + accent-line establish the region.
+        // Scene 2 (1.2-4.8s): 4 rows stagger-assemble ~0.9s apart (BUILD
+        //   sub-mode of grid-card-assemble's Benefits vertical-list variant —
+        //   each line stays lit as the next arrives).
+        // Scene 3 (4.8-6.0s): completed list holds with a barely-perceptible
+        //   sine float (position only, no breathing scale).
+        var ROW_STAGGER = 0.9;
+        var ROW_START_BASE = 1.2;
+        var ROW_STARTS = [0, 1, 2, 3].map(function (i) {
+          return ROW_START_BASE + i * ROW_STAGGER;
+        }); // 1.2, 2.1, 3.0, 3.9
+
+        var BADGE_POP_DUR = 0.45;
+        var CHECK_DRAW_DELAY = 0.15; // relative to row start
+        var CHECK_DRAW_DUR = 0.3;
+        var LABEL_WIPE_DELAY = 0.2; // relative to row start
+        var LABEL_WIPE_DUR = 0.45;
+
+        var IDLE_START = 4.8;
+        var IDLE_DUR = 1.2; // ends exactly at data-duration (6s)
+        var IDLE_CYCLES = 0.5;
+        var Y_AMP_PX = 1.5; // low amplitude, /sqrt(4 rows) per sine-wave-loop concurrent rule
+
+        // Measure each checkmark path's length up front (deterministic —
+        // real DOM geometry, not a magic number) and prime the dash pattern
+        // so every path starts fully hidden.
+        var checkPaths = [];
+        for (var ci = 0; ci < 4; ci++) {
+          var p = document.getElementById("check-" + ci);
+          var len = p.getTotalLength();
+          p.style.strokeDasharray = String(len);
+          p.style.strokeDashoffset = String(len);
+          checkPaths.push({ el: p, len: len });
+        }
+
+        var tl = gsap.timeline({ paused: true });
+
+        // Scene 1 — eyebrow fades up, accent-line draws in beneath it.
+        tl.fromTo(
+          "#eyebrow",
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+          0.3,
+        );
+        tl.fromTo(
+          "#accent-line",
+          { scaleX: 0, opacity: 0 },
+          { scaleX: 1, opacity: 1, duration: 0.5, ease: "power2.out" },
+          0.7,
+        );
+
+        // Scene 2 — four rows stagger-assemble.
+        for (var i = 0; i < 4; i++) {
+          var rowStart = ROW_STARTS[i];
+          var badgeSel = "#badge-" + i;
+          var labelSel = "#label-" + i;
+          var checkPath = checkPaths[i];
+
+          // Gold check-mark badge spring-pops in (smooth long-tail settle,
+          // per spring-pop-entrance — no bouncy overshoot here).
+          tl.fromTo(
+            badgeSel,
+            { scale: 0, opacity: 0 },
+            { scale: 1, opacity: 1, duration: BADGE_POP_DUR, ease: "power3.out" },
+            rowStart,
+          );
+
+          // Checkmark stroke draws inside the badge right after it pops.
+          tl.to(
+            checkPath.el,
+            { strokeDashoffset: 0, duration: CHECK_DRAW_DUR, ease: "power2.out" },
+            rowStart + CHECK_DRAW_DELAY,
+          );
+
+          // Short mask-wipe text reveal — the label slides a short distance
+          // out of the overflow-hidden mask box while fading in (technique
+          // 12 / clip-path reveal masks, implemented via a static mask +
+          // sliding+fading content so only allow-listed props animate).
+          tl.fromTo(
+            labelSel,
+            { x: 48, opacity: 0 },
+            { x: 0, opacity: 1, duration: LABEL_WIPE_DUR, ease: "power2.out" },
+            rowStart + LABEL_WIPE_DELAY,
+          );
+        }
+
+        // Scene 3 — completed list holds; gentle sine float (translateY
+        // only, no scale) across all four rows in unison so phase(0) = 0
+        // and there is no jump into idle.
+        var rowEls = [0, 1, 2, 3].map(function (i) {
+          return document.getElementById("row-" + i);
+        });
+        var idlePhase = { p: 0 };
+        tl.to(
+          idlePhase,
+          {
+            p: Math.PI * 2 * IDLE_CYCLES,
+            duration: IDLE_DUR,
+            ease: "none",
+            onUpdate: function () {
+              var y = Math.sin(idlePhase.p) * Y_AMP_PX;
+              for (var r = 0; r < rowEls.length; r++) {
+                rowEls[r].style.transform = "translateY(" + y + "px)";
+              }
+            },
+          },
+          IDLE_START,
+        );
+
+        window.__timelines["05-exemptions"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,253 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- head is metadata for the source file only; the HyperFrames runtime
+         only clones <template> contents — nothing here ships to the render. -->
+    <title>Frame 3 — Name the rule</title>
+  </head>
+  <body>
+    <template>
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&display=swap');
+
+        /* Root — styled by #root only, never a class (scoping pitfall). */
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1080px;
+          height: 1920px;
+          overflow: hidden;
+          font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+        }
+
+        /* Full-bleed ground lives on its own class="clip" layer, never on #root. */
+        .bg-field {
+          position: absolute;
+          inset: 0;
+          background: #0b1e3c;
+        }
+
+        .scene {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+        }
+
+        .camera {
+          position: absolute;
+          inset: 0;
+          transform-origin: 50% 50%;
+          will-change: transform;
+        }
+
+        .eyebrow-wrap {
+          position: absolute;
+          top: 230px;
+          left: 0;
+          right: 0;
+          display: flex;
+          justify-content: center;
+        }
+
+        .eyebrow-pill {
+          display: inline-block;
+          padding: 16px 34px;
+          background: rgba(212, 175, 55, 0.08);
+          color: #d4af37;
+          border-radius: 100px;
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 600;
+          font-size: 30px;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          opacity: 0;
+        }
+
+        .hero-stack {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 806px;
+          transform: translateY(-50%);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 26px;
+        }
+
+        .glow {
+          position: absolute;
+          z-index: 1;
+          width: 920px;
+          height: 920px;
+          top: 50%;
+          left: 50%;
+          margin-left: -460px;
+          margin-top: -460px;
+          border-radius: 50%;
+          background: radial-gradient(
+            circle,
+            rgba(212, 175, 55, 0.9) 0%,
+            rgba(212, 175, 55, 0.5) 38%,
+            rgba(212, 175, 55, 0) 70%
+          );
+          opacity: 0;
+          transform: scale(0.85);
+          pointer-events: none;
+          will-change: transform, opacity;
+        }
+
+        .counter-wrap {
+          position: relative;
+          z-index: 2;
+          display: flex;
+          justify-content: center;
+          width: 100%;
+        }
+
+        .counter {
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 700;
+          font-variant-numeric: tabular-nums;
+          letter-spacing: -0.03em;
+          line-height: 1;
+          color: #d4af37;
+          font-size: 210px;
+        }
+
+        .label {
+          position: relative;
+          z-index: 2;
+          font-family: "Space Grotesk", sans-serif;
+          font-weight: 600;
+          font-size: 58px;
+          letter-spacing: 0.05em;
+          text-transform: uppercase;
+          color: #f5f1e6;
+          opacity: 0;
+        }
+      </style>
+
+      <div id="root" data-composition-id="03-rule-name" data-width="1080" data-height="1920" data-duration="5">
+        <div class="bg-field clip" data-start="0" data-duration="5" data-track-index="0"></div>
+
+        <div class="scene clip" data-start="0" data-duration="5" data-track-index="1">
+          <div class="camera" id="camera">
+            <div class="eyebrow-wrap">
+              <div class="eyebrow-pill" id="eyebrow">SECURE ACT 2.0</div>
+            </div>
+
+            <div class="hero-stack" id="hero-stack">
+              <div class="glow" id="glow"></div>
+              <div class="counter-wrap">
+                <span class="counter" id="counter">0</span>
+              </div>
+              <div class="label" id="label">YEAR RULE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        const camera = document.getElementById("camera");
+        const counterEl = document.getElementById("counter");
+        const glowEl = document.getElementById("glow");
+        const heroStack = document.getElementById("hero-stack");
+
+        camera.style.transform = "scale(1)";
+
+        // Scene 1→3: a single very-slow continuous push-in that lands its peak
+        // exactly at Scene 3's start (t=3.4), then holds flat for the rest —
+        // no drift/breathe on the camera itself (video direction bans back-half
+        // pan/push; only the numeral/label get the bounded jitter later).
+        const cam = { scale: 1 };
+        tl.to(
+          cam,
+          {
+            scale: 1.07,
+            duration: 3.4,
+            ease: "power2.out",
+            onUpdate: () => {
+              camera.style.transform = `scale(${cam.scale})`;
+            },
+          },
+          0,
+        );
+
+        // Scene 1 (0.0–1.3s): gold eyebrow tag-pill fades up top-center.
+        tl.fromTo(
+          "#eyebrow",
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+          0.25,
+        );
+
+        // Scene 2 (1.3–3.4s): bold gold numeral counts 0 → 10, font-size growing
+        // with the value, landing dead-center at y≈0.42×height.
+        const counterState = { value: 0, fontSize: 210 };
+        tl.fromTo(
+          counterState,
+          { value: 0, fontSize: 210 },
+          {
+            value: 10,
+            fontSize: 460,
+            duration: 2.0,
+            ease: "power3.out",
+            onUpdate: () => {
+              counterEl.textContent = Math.round(counterState.value).toLocaleString();
+              counterEl.style.fontSize = `${counterState.fontSize}px`;
+            },
+          },
+          1.3,
+        );
+
+        // Cream "YEAR RULE" label fades up beneath, arriving before the count
+        // peaks so number + label read as one beat.
+        tl.fromTo(
+          "#label",
+          { opacity: 0, y: 16 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+          2.0,
+        );
+
+        // Scene 3 (3.4–5.0s): soft gold ambient glow blooms behind the numeral,
+        // landing right as the numeral + push-in settle.
+        tl.fromTo(
+          glowEl,
+          { opacity: 0, scale: 0.85 },
+          { opacity: 0.32, scale: 1, duration: 0.8, ease: "power2.out" },
+          3.4,
+        );
+
+        // Bounded, low-amplitude jitter during the final hold — the only
+        // sanctioned aliveness once everything has landed. Not a loop: a
+        // single finite tween from phase 0, sin(0)=0 so there's no jump from
+        // the settled state.
+        const jitter = { p: 0 };
+        tl.to(
+          jitter,
+          {
+            p: Math.PI * 2 * 0.5,
+            duration: 0.8,
+            ease: "none",
+            onUpdate: () => {
+              const s = Math.sin(jitter.p);
+              const scale = 1 + s * 0.01;
+              const y = s * 2;
+              heroStack.style.transform = `translateY(calc(-50% + ${y}px)) scale(${scale})`;
+            },
+          },
+          4.2,
+        );
+
+        window.__timelines["03-rule-name"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

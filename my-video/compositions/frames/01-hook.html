@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>01-hook</title>
+    <!-- Note: everything in <head> is discarded by the HyperFrames sub-composition
+         loader — it only clones <template> contents. Kept here for source readability. -->
+  </head>
+  <body>
+    <template>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&display=swap');
+
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1080px;
+          height: 1920px;
+          overflow: hidden;
+          container-type: size;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .clip {
+          position: absolute;
+          inset: 0;
+        }
+
+        /* Full-bleed ground — a dedicated clip layer, never painted on #root. */
+        .bg-field {
+          background: #0b1e3c;
+        }
+
+        .center-stack {
+          position: absolute;
+          left: 50%;
+          top: 806px; /* 0.42 x 1920 — centered-hero anchor, not canvas midpoint */
+          transform: translate(-50%, -50%);
+          width: 84%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .headline-1 {
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 700;
+          font-size: 8cqw;
+          line-height: 1.18;
+          letter-spacing: -0.01em;
+          color: #f5f1e6;
+          text-align: center;
+          margin: 0;
+        }
+
+        .accent-line {
+          width: 26cqw;
+          height: 6px;
+          border-radius: 3px;
+          background: #d4af37;
+          margin-top: 3.4cqw;
+          transform-origin: left center;
+        }
+
+        .headline-2 {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .hl2-line1 {
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 700;
+          font-size: 9.6cqw;
+          line-height: 1.08;
+          letter-spacing: -0.01em;
+          color: #f5f1e6;
+          text-align: center;
+          margin: 0;
+          text-transform: uppercase;
+        }
+
+        .hl2-line2-wrap {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-top: 0.6cqw;
+        }
+
+        .hl2-line2 {
+          font-family: 'Space Grotesk', sans-serif;
+          font-weight: 700;
+          font-size: 11.4cqw;
+          line-height: 1.05;
+          letter-spacing: -0.01em;
+          color: #d4af37;
+          text-align: center;
+          margin: 0;
+          text-transform: uppercase;
+        }
+
+        .accent-line-2 {
+          width: 30cqw;
+          height: 6px;
+          border-radius: 3px;
+          background: #d4af37;
+          margin-top: 2.6cqw;
+          box-shadow: 0 0 14px 1px rgba(212, 175, 55, 0.5);
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="01-hook"
+        data-width="1080"
+        data-height="1920"
+        data-duration="4"
+      >
+        <!-- Full-bleed navy ground, entire shot -->
+        <div class="clip bg-field" data-start="0" data-duration="4" data-track-index="0"></div>
+
+        <!-- Scene 1 (0.0-1.6s): "Inherited an IRA?" hard-cuts in, accent-line draws under it -->
+        <div class="clip" data-start="0" data-duration="1.6" data-track-index="1">
+          <div class="center-stack">
+            <h1 class="headline-1">Inherited an IRA?</h1>
+            <div class="accent-line" id="hook-accent-1"></div>
+          </div>
+        </div>
+
+        <!-- Scene 2+3 (1.6-4.0s): hard-cut swap to "THE RULES JUST CHANGED", CHANGED in gold,
+             accent-line under CHANGED brightens once at 3.2s, subtle jitter to the end -->
+        <div class="clip" data-start="1.6" data-duration="2.4" data-track-index="1">
+          <div class="center-stack" id="hook-scene2-jitter">
+            <div class="headline-2">
+              <p class="hl2-line1">The rules just</p>
+              <div class="hl2-line2-wrap">
+                <p class="hl2-line2">Changed</p>
+                <div class="accent-line-2" id="hook-accent-2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <script>
+        (function () {
+          window.__timelines = window.__timelines || {};
+
+          var accent1 = document.getElementById('hook-accent-1');
+          var accent2 = document.getElementById('hook-accent-2');
+          var scene2Jitter = document.getElementById('hook-scene2-jitter');
+
+          // Static starting states (set synchronously, before the timeline runs).
+          gsap.set(accent1, { scaleX: 0 });
+          gsap.set(accent2, { opacity: 0.5 });
+
+          var tl = gsap.timeline({ paused: true });
+
+          // Scene 1 (0.0-1.6s) — headline hard-cuts in via clip visibility (no tween needed).
+          // Gold accent-line draws in left->right beneath it.
+          tl.to(accent1, { scaleX: 1, duration: 0.5, ease: 'power2.out' }, 0.3);
+
+          // Scene 2 (1.6-3.2s) — hard-cut swap handled by clip visibility; no entrance tween
+          // (no roll/slide, per the shot spec). Accent-line-2 sits at rest (dim) under "Changed".
+
+          // Scene 3 (3.2-4.0s) — accent-line brightens once (single settle, not a loop).
+          tl.to(accent2, { opacity: 1, duration: 0.4, ease: 'power3.out' }, 3.2);
+
+          // Subtle jitter on the settled scene-2 stack, low amplitude, to the end of the shot.
+          var phase = { p: 0 };
+          tl.to(
+            phase,
+            {
+              p: Math.PI * 2,
+              duration: 0.7,
+              ease: 'none',
+              onUpdate: function () {
+                var y = Math.sin(phase.p) * 2; // 2px — barely-perceptible
+                scene2Jitter.style.transform =
+                  'translate(-50%, calc(-50% + ' + y + 'px))';
+              },
+            },
+            3.3,
+          );
+
+          window.__timelines['01-hook'] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

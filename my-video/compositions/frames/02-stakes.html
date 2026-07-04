@@ -1,0 +1,215 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- head is metadata for the source file only; the runtime ignores everything here -->
+  </head>
+  <body>
+    <template>
+      <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&display=swap');
+
+        #root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          font-family: "Space Grotesk", sans-serif;
+        }
+
+        .bg-field {
+          position: absolute;
+          inset: 0;
+          background: #0b1e3c;
+        }
+
+        .stack {
+          position: absolute;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding-top: 510px;
+          box-sizing: border-box;
+        }
+
+        .line1 {
+          display: flex;
+          gap: 0.32em;
+          margin: 0;
+        }
+
+        .word {
+          font-size: 120px;
+          font-weight: 700;
+          letter-spacing: -0.02em;
+          color: #f5f1e6;
+          line-height: 1.1;
+        }
+
+        .line2a {
+          display: flex;
+          justify-content: center;
+          margin-top: 72px;
+        }
+
+        .underline-wrap {
+          position: relative;
+          display: inline-flex;
+          gap: 0.26em;
+          padding-bottom: 16px;
+        }
+
+        .underline-wrap .word {
+          font-size: 96px;
+        }
+
+        .underline-bar {
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          height: 10px;
+          border-radius: 5px;
+          background: #d4af37;
+          transform-origin: left center;
+        }
+
+        .line2b {
+          display: flex;
+          justify-content: center;
+          margin-top: 16px;
+        }
+
+        .line2b .word {
+          font-size: 70px;
+        }
+
+        .line3 {
+          margin-top: 92px;
+          font-family: "Inter", sans-serif;
+          font-weight: 500;
+          font-size: 46px;
+          letter-spacing: 0;
+          color: #949494;
+          line-height: 1.5;
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="02-stakes"
+        data-width="1080"
+        data-height="1920"
+        data-duration="4"
+      >
+        <div class="bg-field clip" data-start="0" data-duration="4" data-track-index="0"></div>
+
+        <div class="stack clip" data-start="0" data-duration="4" data-track-index="1">
+          <div class="line1">
+            <span class="word" id="w1">You</span><span class="word" id="w2">can't</span>
+          </div>
+
+          <div class="line2a">
+            <span class="underline-wrap" id="underline-wrap">
+              <span class="word" id="w3">stretch</span><span class="word" id="w4">it</span
+              ><span class="word" id="w5">out</span>
+              <span class="underline-bar" id="underline"></span>
+            </span>
+          </div>
+
+          <div class="line2b">
+            <span class="word" id="w6">anymore</span>
+          </div>
+
+          <div class="line3" id="line3">The old rules are gone.</div>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        // Scene 1 (0.0-1.4s): "You can't" — per-word staggered reveal, upper-third.
+        tl.fromTo(
+          "#w1",
+          { opacity: 0, y: 26 },
+          { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" },
+          0.05,
+        );
+        tl.fromTo(
+          "#w2",
+          { opacity: 0, y: 26 },
+          { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" },
+          0.22,
+        );
+
+        // Scene 2 (1.4-2.6s): "stretch it out" lands word-by-word, then a gold underline
+        // draws left->right beneath it, then the trailing "anymore" lands.
+        tl.fromTo(
+          "#w3",
+          { opacity: 0, y: 26 },
+          { opacity: 1, y: 0, duration: 0.42, ease: "power3.out" },
+          1.4,
+        );
+        tl.fromTo(
+          "#w4",
+          { opacity: 0, y: 26 },
+          { opacity: 1, y: 0, duration: 0.42, ease: "power3.out" },
+          1.58,
+        );
+        tl.fromTo(
+          "#w5",
+          { opacity: 0, y: 26 },
+          { opacity: 1, y: 0, duration: 0.42, ease: "power3.out" },
+          1.76,
+        );
+        tl.fromTo(
+          "#underline",
+          { scaleX: 0 },
+          { scaleX: 1, duration: 0.45, ease: "power2.out" },
+          1.95,
+        );
+        tl.fromTo(
+          "#w6",
+          { opacity: 0, y: 22 },
+          { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" },
+          2.05,
+        );
+
+        // Scene 3 (2.6-4.0s): supporting line fades up beneath, settles, then holds
+        // with only a barely-perceptible sine jitter (no breathing scale, position only).
+        tl.fromTo(
+          "#line3",
+          { opacity: 0, y: 18 },
+          { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" },
+          2.75,
+        );
+
+        const stack = document.querySelector(".stack");
+        const IDLE_START = 3.3;
+        const IDLE_DUR = 4 - IDLE_START;
+        const CYCLES = 0.35;
+        const Y_AMP_PX = 1.5;
+        const SCALE_AMP = 0.006;
+        const phase = { p: 0 };
+        tl.to(
+          phase,
+          {
+            p: Math.PI * 2 * CYCLES,
+            duration: IDLE_DUR,
+            ease: "none",
+            onUpdate: () => {
+              const y = Math.sin(phase.p) * Y_AMP_PX;
+              const scale = 1 + Math.sin(phase.p) * SCALE_AMP;
+              stack.style.transform = `translateY(${y}px) scale(${scale})`;
+            },
+          },
+          IDLE_START,
+        );
+
+        window.__timelines["02-stakes"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
