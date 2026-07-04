@@ -7,13 +7,12 @@
   <body>
     <template>
       <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500&display=swap');
 
         #root {
           position: absolute;
           inset: 0;
           overflow: hidden;
-          font-family: "Space Grotesk", sans-serif;
+          font-family: "Montserrat", sans-serif;
         }
 
         .bg-field {
@@ -34,7 +33,6 @@
 
         .line1 {
           display: flex;
-          gap: 0.32em;
           margin: 0;
         }
 
@@ -44,6 +42,11 @@
           letter-spacing: -0.02em;
           color: #f5f1e6;
           line-height: 1.1;
+          margin-right: 0.32em;
+        }
+
+        #w2 {
+          margin-right: 0;
         }
 
         .line2a {
@@ -55,12 +58,16 @@
         .underline-wrap {
           position: relative;
           display: inline-flex;
-          gap: 0.26em;
           padding-bottom: 16px;
         }
 
         .underline-wrap .word {
           font-size: 96px;
+          margin-right: 0.26em;
+        }
+
+        #w5 {
+          margin-right: 0;
         }
 
         .underline-bar {
@@ -78,6 +85,10 @@
           display: flex;
           justify-content: center;
           margin-top: 16px;
+        }
+
+        #w6 {
+          margin-right: 0;
         }
 
         .line2b .word {
@@ -125,7 +136,6 @@
         </div>
       </div>
 
-      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
       <script>
         window.__timelines = window.__timelines || {};
         const tl = gsap.timeline({ paused: true });

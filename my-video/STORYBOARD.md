@@ -27,7 +27,7 @@ audience: "adults who've inherited or expect to inherit an IRA; no tax backgroun
 - scene: Navy cover card, gold accent-line, bold headline punches in
 - duration: 4s
 - transition_in: cut
-- status: outline
+- status: animated
 - voiceover:
 - src: compositions/frames/01-hook.html
 - blueprint: kinetic-type-beats (Adapt — Hook/flash variant)
@@ -51,7 +51,7 @@ Scene 3 (3.2–4.0s): holds; gold accent-line brightens briefly under "CHANGED" 
 - scene: Centered kinetic type, per-word build contradicts the old "stretch it out" assumption
 - duration: 4s
 - transition_in: crossfade
-- status: outline
+- status: animated
 - voiceover:
 - src: compositions/frames/02-stakes.html
 - blueprint: kinetic-type-beats (Adapt — Problem variant)
@@ -75,7 +75,7 @@ Scene 3 (2.6–4.0s): a smaller supporting line fades up beneath — "The old ru
 - scene: Hero numeral card — "10" dominates, "YEAR RULE" beneath, eyebrow tag "SECURE Act 2.0"
 - duration: 5s
 - transition_in: push-slide UP
-- status: outline
+- status: animated
 - voiceover:
 - src: compositions/frames/03-rule-name.html
 - blueprint: dataviz-countup (Adapt — Product_Intro variant)
@@ -99,7 +99,7 @@ Scene 3 (3.4–5.0s): soft gold ambient glow blooms behind the numeral; push-in 
 - scene: Tinted card — flexible-timing framing, gold progress bar suggesting the 10-year span
 - duration: 5s
 - transition_in: push-slide UP
-- status: outline
+- status: animated
 - voiceover:
 - src: compositions/frames/04-flexible-timing.html
 - blueprint: compose (Key_Feature menu doesn't fit a single abstract idea card; built from the motion vocabulary)
@@ -123,7 +123,7 @@ Scene 3 (3.0–5.0s): beneath the headline, a gold progress-bar track fills left
 - scene: Stacked 4-item list card — spouses, minor children, disabled/chronically ill, near-in-age beneficiaries
 - duration: 6s
 - transition_in: push-slide UP
-- status: outline
+- status: animated
 - voiceover:
 - src: compositions/frames/05-exemptions.html
 - blueprint: grid-card-assemble (Reproduce — Benefits vertical-list variant)
@@ -147,7 +147,7 @@ Scene 3 (4.8–6.0s): completed list holds; a gentle, barely-perceptible sine fl
 - scene: Split-screen mirrored cards, gold inner-edge badge, the twist most people miss
 - duration: 6s
 - transition_in: crossfade
-- status: outline
+- status: animated
 - voiceover:
 - src: compositions/frames/06-the-catch.html
 - blueprint: comparison-split (Adapt — two conditions instead of two features)
@@ -171,7 +171,7 @@ Scene 3 (3.4–6.0s): a gold pill badge spring-pops at the right card's inner ed
 - scene: Centered stat sequence — penalty percentage stepping down, gold numerals
 - duration: 5s
 - transition_in: push-slide UP
-- status: outline
+- status: animated
 - voiceover:
 - src: compositions/frames/07-penalty.html
 - blueprint: compose (Social_Proof menu doesn't fit a numeric step-down; built from count-up/data motion vocabulary)
@@ -195,7 +195,7 @@ Scene 3 (3.2–5.0s): a smaller "10%" ticks in beside/below with label "if fixed
 - scene: Centered hero numeral card, gold "2-3X" dominant, supporting line beneath
 - duration: 5s
 - transition_in: crossfade
-- status: outline
+- status: animated
 - voiceover:
 - src: compositions/frames/08-leverage-play.html
 - blueprint: compose (Benefits menu is calm/breather-oriented; this beat needs a hero-numeral landing, built from count-up motion vocabulary)
@@ -219,7 +219,7 @@ Scene 3 (3.5–5.0s): soft gold ambient glow blooms behind "2-3X"; small cream s
 - scene: Centered closing card, gold CTA pill reading the calculator name, soft concentric rings
 - duration: 4s
 - transition_in: crossfade
-- status: outline
+- status: animated
 - voiceover:
 - src: compositions/frames/09-cta.html
 - blueprint: kinetic-type-beats (Adapt — CTA variant)
